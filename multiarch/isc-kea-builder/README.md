@@ -4,7 +4,7 @@ Build and copy the isc-kea artifacts to host.
 # Usage:
 Download the qemu interpreter for arm64v8:
 ```bash
-VER="v5.1.0-5" && wget -c https://github.com/multiarch/qemu-user-static/releases/download/${VER}/qemu-aarch64-static -P bin/
+VER="v5.1.0-5" && wget -c https://github.com/multiarch/qemu-user-static/releases/download/${VER}/qemu-aarch64-static -P bin/ && chmod a+x bin/*
 ```
 Register the qemu interpreters:
 ```bash
