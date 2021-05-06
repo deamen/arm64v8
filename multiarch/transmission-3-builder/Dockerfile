@@ -36,13 +36,13 @@ RUN wget -c https://github.com/transmission/transmission/releases/download/${TRA
 RUN tar -xf transmission-${TRANSMISSION_VERSION}.tar.xz
 RUN cd transmission-${TRANSMISSION_VERSION} && \
     ./configure --prefix=/home/${USERNAME}/transmission-packaging/usr/local \
-        --without-gtk \
-        --without-inotify \
-        --without-kqueue \
-        --without-systemd \
-        --disable-cli \
-        --disable-nls \
-        LIBCURL_LIBS="$(pkg-config --libs --static libcurl libbrotlidec libnghttp2)" && \
+    --without-gtk \
+    --without-inotify \
+    --without-kqueue \
+    --without-systemd \
+    --disable-cli \
+    --disable-nls \
+    LIBCURL_LIBS="$(pkg-config --libs --static libcurl libbrotlidec libnghttp2)" && \
     make LDFLAGS="-all-static" && \
     make install
 
