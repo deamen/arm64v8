@@ -17,10 +17,11 @@ Start the build:
 DOCKER_BUILDKIT=1 docker build -o out .
 
 ```
+---
 ## amd64/x86_64:
 Start the build:
 ```bash
 DOCKER_BUILDKIT=1 docker build -o out .
 
-
+```
 The artifacts should appear in the ./out folder after a successfull build.
