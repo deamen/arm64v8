@@ -49,9 +49,11 @@ RUN cd transmission-${TRANSMISSION_VERSION} && \
 #Remove unnecessary files
 RUN rm -rf /home/${USERNAME}/transmission-packaging/usr/local/share/man
 RUN find /home/${USERNAME}/transmission-packaging/usr/local/bin -type f ! -iname transmission-daemon -exec rm -rf "{}" \;
+RUN mkdir -p /home/${USERNAME}/transmission-packaging/etc/transmission.d
+RUN cd /home/${USERNAME}/transmission-packaging/etc/transmission.d && wget https://curl.se/ca/cacert.pem
 
 RUN cd transmission-packaging && \
-    tar -cJf /home/${USERNAME}/transmission-packaging/transmission-daemon-static-${TRANSMISSION_VERSION}.tar.xz usr
+    tar -cJf /home/${USERNAME}/transmission-packaging/transmission-daemon-static-${TRANSMISSION_VERSION}-x86_64.tar.xz etc usr
 
 FROM scratch AS exporter
 
@@ -59,4 +61,4 @@ ENV PACKAGER="Song Tang <deamen@gmail.com>" \
     USERNAME="abuild" \
     TRANSMISSION_VERSION="3.00" 
 
-COPY --from=builder /home/${USERNAME}/transmission-packaging/transmission-daemon-static-${TRANSMISSION_VERSION}.tar.xz /
+COPY --from=builder /home/${USERNAME}/transmission-packaging/transmission-daemon-static-${TRANSMISSION_VERSION}-x86_64.tar.xz /

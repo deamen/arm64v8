@@ -50,9 +50,12 @@ RUN cd transmission-${TRANSMISSION_VERSION} && \
 #Remove unnecessary files
 RUN rm -rf /home/${USERNAME}/transmission-packaging/usr/local/share/man
 RUN find /home/${USERNAME}/transmission-packaging/usr/local/bin -type f ! -iname transmission-daemon -exec rm -rf "{}" \;
+RUN mkdir -p /home/${USERNAME}/transmission-packaging/etc/transmission.d
+RUN cd /home/${USERNAME}/transmission-packaging/etc/transmission.d && wget https://curl.se/ca/cacert.pem
+
 
 RUN cd transmission-packaging && \
-    tar -cJf /home/${USERNAME}/transmission-packaging/transmission-daemon-static-${TRANSMISSION_VERSION}-arm64.tar.xz usr
+    tar -cJf /home/${USERNAME}/transmission-packaging/transmission-daemon-static-${TRANSMISSION_VERSION}-arm64.tar.xz etc usr
 
 FROM scratch AS exporter
 
