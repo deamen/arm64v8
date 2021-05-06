@@ -1,5 +1,5 @@
 # transmission-3-builder
-Build and copy the transmission-3 artifacts to host.
+Build and copy the statically linked transmission-3 artifacts to host.
 
 # Usage:
 ## arm64v8:
@@ -14,7 +14,7 @@ docker run --rm --privileged multiarch/qemu-user-static --reset
 ```
 Start the build:
 ```bash
-DOCKER_BUILDKIT=1 docker build -o out .
+DOCKER_BUILDKIT=1 docker build -f Dockerfile-arm64v8 -o out .
 
 ```
 ---
