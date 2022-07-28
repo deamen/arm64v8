@@ -25,7 +25,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build the u-boot bin
-        run: cd u-boot-builder && docker buildx build Dockerfile.u-boot-${{ inputs.tgt }} -o ./out
+        run: cd u-boot-builder && docker buildx build . -f Dockerfile.u-boot-${{ inputs.tgt }} -o ./out
 
       - name: Upload the ${{ inputs.tgt }} u-boot
         uses: actions/upload-artifact@v3
