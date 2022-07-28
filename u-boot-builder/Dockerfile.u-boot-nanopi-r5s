@@ -1,0 +1,20 @@
+FROM arm64v8/alpine:latest as builder
+LABEL maintainer="github.com/deamen"
+
+COPY bin/qemu-aarch64-static /usr/bin/
+RUN apk add git gcc make libc-dev bison flex openssl-dev python3 dtc
+# RK3568 is not in atf repo
+#RUN git clone https://github.com/ARM-software/arm-trusted-firmware.git
+RUN git clone https://github.com/rockchip-linux/rkbin.git
+RUN git clone https://github.com/u-boot/u-boot.git
+ENV BL31=/rkbin/bin/rk35/rk3568_bl31_v1.24.elf
+
+WORKDIR "/u-boot"
+RUN git checkout v2022.07
+RUN make evb-rk3568_defconfig
+RUN make
+
+FROM scratch AS exporter
+
+LABEL maintainer="github.com/deamen"
+COPY --from=builder /u-boot/u-boot-rockchip.bin /u-boot-nanopi-r5s.bin

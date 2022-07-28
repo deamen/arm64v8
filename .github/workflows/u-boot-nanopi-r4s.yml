@@ -1,0 +1,18 @@
+name: "u-boot: nanopi-r4s"
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: 
+       - 'u-boot-builder/Dockerfile.u-boot-nanopi-r4s'
+  pull_request:
+    branches: [ "master" ]
+
+  workflow_dispatch:
+
+jobs:
+  build-u-boot-nanopi-r4s:
+    uses: ./.github/workflows/uboot_base_workflow.yml
+    with:
+      tgt: nanopi-r4s
+      registry: ghcr.io
