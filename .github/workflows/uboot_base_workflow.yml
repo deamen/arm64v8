@@ -11,7 +11,7 @@ on:
         type: string
         
 jobs:
-  build-uboot-${{ inputs.tgt }}:
+  build-uboot-bin:
     runs-on: ubuntu-latest
 
     steps:
