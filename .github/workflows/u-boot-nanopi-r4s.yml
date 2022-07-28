@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-u-boot-nanopi-r4s:
-    uses: ./.github/reusable_workflows/uboot_base_workflow.yml
+    uses: ./.github/workflows/uboot_base_workflow.yml
     with:
       tgt: nanopi-r4s
       registry: ghcr.io
