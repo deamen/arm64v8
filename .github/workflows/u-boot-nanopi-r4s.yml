@@ -2,11 +2,11 @@ name: "u-boot: nanopi-r4s"
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
     paths: 
        - 'u-boot-builder/Dockerfile.u-boot-nanopi-r4s'
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
   workflow_dispatch:
 

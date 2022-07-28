@@ -24,6 +24,9 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Don't copy qemu binary in github runner
+        run: sed -i '/^COPY.*qemu-aarch64-static/d' u-boot-builder/Dockerfile.${{ inputs.tgt }}
+
       - name: Build the u-boot bin
         run: cd u-boot-builder && docker buildx build . -f Dockerfile.u-boot-${{ inputs.tgt }} -o ./out
 
