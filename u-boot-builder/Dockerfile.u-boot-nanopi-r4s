@@ -1,8 +1,8 @@
-FROM arm64v8/alpine:latest as builder
+FROM arm64v8/alpine:3.16 as builder
 LABEL maintainer="github.com/deamen"
 
 COPY bin/qemu-aarch64-static /usr/bin/
-RUN apk add git gcc make libc-dev bison flex openssl-dev python3 dtc gcc-arm-none-eabi
+RUN apk add git gcc make libc-dev bison flex openssl-dev python3 dtc gcc-arm-none-eabi py3-setuptools swig python3-dev
 RUN git clone https://github.com/ARM-software/arm-trusted-firmware.git
 RUN git clone https://github.com/u-boot/u-boot.git
 
