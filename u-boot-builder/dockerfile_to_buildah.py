@@ -14,15 +14,34 @@ def dockerfile_to_buildah(dockerfile_path):
         if line.startswith('FROM ') and not 'AS exporter' in line:
             image = line.split(' ')[1].strip()
             container = f'$container'
-            buildah_lines.append(f'container=$(buildah from {image})\n')
+            buildah_lines.append(f'export container=$(buildah from {image})\n')
         elif line.startswith('RUN '):
             command = line.split(' ', 1)[1].strip()
             buildah_lines.append(f'buildah run {container} {command}\n')
         elif line.startswith('COPY '):
-            if 'qemu-aarch64-static' in line:
-                continue
-            source, dest = line.split()[1:3]
-            buildah_lines.append(f'buildah copy $container {source} {dest}\n')
+            if not convert_copy:
+                if 'qemu-aarch64-static' in line:
+                    continue
+                elif 'builder' in line:
+                    continue
+            elif convert_copy:
+                if not line.startswith('COPY --from=builder'):
+                    continue
+                elif line.startswith('COPY --from=builder'):
+                    source, dest = line.split()[2:4]
+                    buildah_lines.append(f'cat << \'EOF\' >> copy-u-boot.sh\n')
+                    buildah_lines.append(f'#!/bin/sh\n')
+                    buildah_lines.append(f'mnt=$(buildah mount $container)\n')
+                    buildah_lines.append(f'cp $mnt{source} .{dest}\n')
+                    buildah_lines.append(f'buildah umount $container\n')
+                    buildah_lines.append(f'EOF\n')
+                    buildah_lines.append(f'chmod a+x copy-u-boot.sh\n')
+                    buildah_lines.append(f'buildah unshare ./copy-u-boot.sh\n')
+                    buildah_lines.append(f'rm ./copy-u-boot.sh\n')      
+            else:
+                source, dest = line.split()[1:3]
+                buildah_lines.append(f'buildah copy $container {source} {dest}\n')
+
         elif line.startswith('CMD '):
             command = line.split(' ', 1)[1].strip()
             buildah_lines.append(f'buildah config --cmd "{command}" {container}\n')
@@ -45,21 +64,10 @@ def dockerfile_to_buildah(dockerfile_path):
             buildah_lines.append(f'buildah config --workingdir {workdir} {container}\n')
         elif line.startswith('FROM scratch AS exporter'):
             convert_copy = True
-        elif convert_copy and not line.startswith('COPY --from=builder'):
-            continue
-        elif line.startswith('COPY --from=builder'):
-            source, dest = line.split()[2:4]
-            buildah_lines.append(f'cat << \'EOF\' >> copy-u-boot.sh\n')
-            buildah_lines.append(f'#!/bin/sh\n')
-            buildah_lines.append(f'mnt=$(buildah mount $container)\n')
-            buildah_lines.append(f'cp $mnt{source} .{dest}\n')
-            buildah_lines.append(f'buildah umount $container\n')
-            buildah_lines.append(f'EOF\n')
-            buildah_lines.append(f'chmod a+x copy-u-boot.sh\n')
-            buildah_lines.append(f'buildah unshare ./copy-u-boot.sh\n')
-            buildah_lines.append(f'rm ./copy-u-boot.sh\n')
         else:
             buildah_lines.append(line)
+
+
 
     buildah_lines.append(f'buildah rm $container\n')
 
