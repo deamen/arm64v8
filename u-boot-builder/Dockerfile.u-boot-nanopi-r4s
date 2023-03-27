@@ -13,10 +13,10 @@ ENV BL31="/arm-trusted-firmware/build/rk3399/release/bl31/bl31.elf"
 
 WORKDIR "/u-boot"
 RUN git checkout v2023.01
-RUN make nanopi-r4s-rk3399_defconfig
+RUN make -j$(nproc --ignore 1) nanopi-r4s-rk3399_defconfig
 RUN sed -i -e 's!^CONFIG_BOOTCOMMAND=.*!CONFIG_BOOTCOMMAND="console=ttyS2,115200n8;run distro_bootcmd"!' .config
 RUN sed -i -e 's!^CONFIG_BAUDRATE=.*!CONFIG_BAUDRATE=115200!' .config
-RUN make
+RUN make -j$(nproc --ignore 1)
 
 FROM scratch AS exporter
 LABEL maintainer="github.com/deamen"
