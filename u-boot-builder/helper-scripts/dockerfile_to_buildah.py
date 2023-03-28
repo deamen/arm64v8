@@ -24,6 +24,8 @@ def dockerfile_to_buildah(dockerfile_path):
                     continue
                 elif 'builder' in line:
                     continue
+                source, dest = line.split()[1:3]
+                buildah_lines.append(f'buildah copy $container {source} {dest}\n')
             elif convert_copy:
                 if not line.startswith('COPY --from=builder'):
                     continue
@@ -37,7 +39,7 @@ def dockerfile_to_buildah(dockerfile_path):
                     buildah_lines.append(f'EOF\n')
                     buildah_lines.append(f'chmod a+x copy-u-boot.sh\n')
                     buildah_lines.append(f'buildah unshare ./copy-u-boot.sh\n')
-                    buildah_lines.append(f'rm ./copy-u-boot.sh\n')      
+                    buildah_lines.append(f'rm ./copy-u-boot.sh\n')
             else:
                 source, dest = line.split()[1:3]
                 buildah_lines.append(f'buildah copy $container {source} {dest}\n')
