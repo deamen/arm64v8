@@ -10,7 +10,7 @@ copy_script="copy_artifacts.sh"
 cat << 'EOF' >> $copy_script
 #!/bin/sh
 mnt=$(buildah mount $container)
-cp $mnt/$1 ./out/$2
+cp -f $mnt/$1 ./out/$2
 buildah umount $container
 EOF
 chmod a+x $copy_script
